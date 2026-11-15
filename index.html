@@ -84,7 +84,7 @@ h1 .th{font-family:var(--font-display);font-weight:700;font-size:1.5rem;display:
 .vid:hover{background:#ff3344}
 .vid:active{transform:translate(2px,2px);box-shadow:none}
 .chip{flex-wrap:wrap}
-.chip .lbl{flex:1 1 55%}
+.chips .chip .lbl{flex:1 1 calc(100% - 46px)}
 .chip [data-act="del"]{order:1}
 .chip .vid{order:2;margin-left:20px;padding:1px 4px;font-size:.45rem}
 .addown{display:flex;gap:6px;margin-top:6px}
@@ -130,14 +130,47 @@ h1 .th{font-family:var(--font-display);font-weight:700;font-size:1.5rem;display:
 .ro{font-size:.78rem;color:var(--exam)}
 .trayhead{display:flex;align-items:center;gap:8px}
 .trayhead h2{flex:1}
-.trayhead button{display:none;border:2px solid var(--ink);background:var(--white);padding:2px 10px;font-size:.8rem;cursor:pointer;box-shadow:2px 2px 0 var(--ink)}
+.trayhead button,.tgbtn{border:2px solid var(--ink);background:var(--white);padding:2px 10px;font-size:.8rem;cursor:pointer;box-shadow:2px 2px 0 var(--ink)}
+.tgbtn{background:var(--gold);padding:6px 12px;border-width:3px;box-shadow:4px 4px 0 var(--ink);font-weight:600}
+.app.notray{grid-template-columns:1fr}
+.addbtn{margin-left:auto;width:24px;height:24px;flex:none;border:2px solid var(--ink);background:var(--gold);box-shadow:2px 2px 0 var(--ink);font-family:var(--font-pixel);font-size:.7rem;line-height:1;cursor:pointer;padding:0;display:grid;place-items:center}
+.addbtn:active{transform:translate(2px,2px);box-shadow:none}
+.dh .load{margin-left:auto}
+.dh .load+.addbtn{margin-left:4px}
+button.mk{font:inherit;font-size:.72rem;text-align:left;cursor:pointer;width:100%}
+.overlay{position:fixed;inset:0;z-index:60;background:rgba(10,20,60,.55);display:grid;place-items:center;padding:16px}
+.modal{background:var(--block);border:4px solid var(--ink);box-shadow:8px 8px 0 var(--ink);width:min(560px,100%);max-height:min(82vh,760px);display:flex;flex-direction:column}
+.mhead{display:flex;align-items:center;gap:8px;padding:10px 12px;background:var(--ink);color:var(--white)}
+.mhead h2{flex:1;margin:0;font-size:1rem;font-family:var(--font-display);font-weight:600}
+.mhead button{border:2px solid var(--white);background:transparent;color:var(--white);padding:2px 9px;cursor:pointer}
+.mtabs{display:flex;gap:6px;padding:10px 12px 0}
+.mtabs button{border:3px solid var(--ink);background:var(--white);padding:4px 12px;cursor:pointer;box-shadow:3px 3px 0 var(--ink);font-size:.86rem}
+.mtabs button[aria-pressed="true"]{background:var(--gold)}
+.mbody{padding:10px 12px;overflow:auto;flex:1;display:flex;flex-direction:column;gap:8px}
+.mbody input[type=search],.mbody input[type=text],.mbody select{width:100%;border:3px solid var(--ink);background:var(--white);padding:7px 9px;font:inherit;font-size:.9rem;color:var(--ink)}
+.mcat{font-size:.82rem;font-weight:600;margin:6px 0 0;display:flex;align-items:center;gap:6px}
+.mcat .dot{width:11px;height:11px;background:var(--cat);border:2px solid var(--ink)}
+.mpick{display:flex;align-items:center;gap:8px;width:100%;text-align:left;background:var(--white);border:2px solid var(--ink);border-left:8px solid var(--cat);padding:6px 8px;cursor:pointer;font-size:.86rem}
+.mpick .box{width:18px;height:18px;border:2px solid var(--ink);flex:none;display:grid;place-items:center;font-size:.75rem;background:var(--white)}
+.mpick.on{background:var(--gold)}
+.mpick.on .box::after{content:"✓"}
+.mpick .meta{margin-left:auto;font-size:.72rem;color:var(--muted);white-space:nowrap}
+.mpick[hidden]{display:none}
+.mfoot{display:flex;gap:8px;justify-content:flex-end;padding:10px 12px;border-top:3px solid var(--ink);flex-wrap:wrap}
+.mfoot button,.preset,.mrow button{border:3px solid var(--ink);padding:7px 14px;cursor:pointer;box-shadow:3px 3px 0 var(--ink);background:var(--white);font-size:.88rem}
+.mfoot .primary,.mrow .primary{background:var(--c-topic);color:var(--white)}
+.mfoot .danger{background:var(--exam);color:var(--white);margin-right:auto}
+.mfoot button:disabled{opacity:.5;cursor:not-allowed}
+.preset{width:100%;text-align:left;background:var(--white)}
+.preset.cur{background:var(--gold)}
+.mrow{display:flex;gap:8px;align-items:stretch}
+.mrow > :first-child{flex:1;min-width:0}
+.mlabel{font-size:.8rem;color:var(--muted);margin:4px 0 -4px}
 
 @media (max-width:820px){
   .app{grid-template-columns:1fr;padding:12px}
   h1{font-size:.85rem}
   .tray{position:sticky;top:0;z-index:20;max-height:42vh;margin:0 -12px;border-left:0;border-right:0;border-top:0;box-shadow:0 4px 0 var(--ink)}
-  .tray.collapsed .body{display:none}
-  .trayhead button{display:inline-block}
   .grid{grid-template-columns:1fr}
   .day{min-height:0;flex-direction:row;flex-wrap:wrap;align-items:flex-start}
   .dh{width:100%}
@@ -221,16 +254,14 @@ const PLAYLIST='PLO6TkjwivXO4';
 function vidLink(id){ const v=VIDEOS[id]; if(!v) return ''; return '<a class="vid" href="https://www.youtube.com/watch?v='+v+'&list='+PLAYLIST+'" target="_blank" rel="noopener" aria-label="ดูวิดีโอ"><svg viewBox="0 0 8 8" aria-hidden="true"><path d="M2 1h1v1h1v1h1v1h-1v1h-1v1h-1z"/></svg>VIDEO</a>'; }
 const MARKS = {
  '2026-11-13':[['note','OP OB Vacuum 14.30'],['note','Trip 13–15 พ.ย.']],
- '2026-11-14':[['duty','เวร LR/ER 8.30–16.30'],['note','Trip']],
+ '2026-11-14':[['note','Trip']],
  '2026-11-15':[['note','Trip']],
  '2026-11-16':[['note','นำเสนอ Topic conf 13.00']],
  '2026-11-18':[['note','TT HIV 13.00']],
- '2026-11-19':[['duty','เวร 16.30–24.00']],
  '2026-11-20':[['note','Practical pain management 8.40'],['note','Sim 1 13.00']],
  '2026-11-23':[['note','Sim 2 13.00']],
- '2026-11-26':[['duty','เวร 16.30–24.00']],
  '2026-11-30':[['exam','สอบ MEQ 13.00']],
- '2026-12-03':[['exam','สอบ OSCE 13.00'],['duty','เวร 16.30–24.00']],
+ '2026-12-03':[['exam','สอบ OSCE 13.00']],
  '2026-12-04':[['exam','สอบ MCQ 13.00']]
 };
 const START='2026-11-09', END='2026-12-06', LAST='2026-12-04';
@@ -240,8 +271,14 @@ const MON=['ม.ค.','ก.พ.','มี.ค.','เม.ย.','พ.ค.','มิ.
 let state;
 try{ state=JSON.parse(document.getElementById('state').textContent); }catch(e){ state={placements:{},custom:[],seq:1}; }
 state.placements=state.placements||{}; state.custom=state.custom||[]; state.seq=state.seq||1;
+const DUTY_PRESETS=['เวรวันราชการ 16.30–24.00','เวรวันหยุด กะกลางวัน 8.30–16.30','เวรวันหยุด กะเย็น 16.30–24.00'];
+if(!state.duties){ state.duties={}; [['2026-11-14',1],['2026-11-19',0],['2026-11-26',0],['2026-12-03',0]].forEach(([d,i])=>{ (state.duties[d]=state.duties[d]||[]).push({uid:'d'+(state.seq++),label:DUTY_PRESETS[i]}); }); }
+let trayOpen=false; try{ trayOpen=localStorage.getItem('obgyn-tray')==='1'; }catch(e){}
+let modal=null; // {day, tab:'topic'|'duty', picks:Set, edit:uid}
 let localNewer=false;
 try{ const ls=JSON.parse(localStorage.getItem('obgyn-planner')||'null'); if(ls && ls.ts && (!state.ts || ls.ts>state.ts)){ state=ls; localNewer=true; } }catch(e){}
+state.placements=state.placements||{}; state.custom=state.custom||[]; state.seq=state.seq||1;
+if(!state.duties){ state.duties={}; [['2026-11-14',1],['2026-11-19',0],['2026-11-26',0],['2026-12-03',0]].forEach(([d,i])=>{ (state.duties[d]=state.duties[d]||[]).push({uid:'d'+(state.seq++),label:DUTY_PRESETS[i]}); }); }
 
 let filter='all', selected=null, artifact=null, canPublish=true, saveTimer=null, saveMsg='';
 
@@ -262,17 +299,17 @@ function render(){
   const scheduled=all.filter(i=>countPlaced(i.id)>0).length;
   let doneSet=new Set(); for(const k in state.placements) for(const p of state.placements[k]) if(p.done) doneSet.add(p.id);
   const dMcq=daysBetween(today,'2026-12-04'), dMeq=daysBetween(today,'2026-11-30');
-  const collapsed=root.querySelector('.tray')?.classList.contains('collapsed');
 
-  let h='<div class="clouds" aria-hidden="true"></div><div class="app">';
-  h+='<header class="top"><div><h1>READING QUEST<span class="th">ตารางอ่านหนังสือ OB-GYN</span></h1><div class="sub">ลากหัวข้อลงวันที่จะอ่าน หรือแตะหัวข้อแล้วแตะวัน · ลงซ้ำได้หลายวันสำหรับรอบทบทวน</div></div>';
+  let h='<div class="clouds" aria-hidden="true"></div><div class="app'+(trayOpen?'':' notray')+'">';
+  h+='<header class="top"><div><h1>READING QUEST<span class="th">ตารางอ่านหนังสือ OB-GYN</span></h1><div class="sub">กด + ในวันไหนเพื่อเลือกหัวข้อหรือเพิ่มเวร · แตะที่เวรเพื่อเปลี่ยน ย้าย หรือลบ</div></div>';
   h+='<div class="stats"><div class="stat">ลงตารางแล้ว <b>'+scheduled+'</b>/'+fixedTotal+'</div><div class="stat">อ่านจบ <b>'+doneSet.size+'</b>/'+fixedTotal+'</div>';
   if(dMeq>=0) h+='<div class="stat exam">MEQ อีก <b>'+dMeq+'</b> วัน</div>';
   if(dMcq>=0) h+='<div class="stat exam">MCQ อีก <b>'+dMcq+'</b> วัน</div>';
-  h+='<div class="save" id="save">'+esc(saveMsg)+'</div></div></header>';
+  h+='<button type="button" class="tgbtn" id="tg" aria-expanded="'+trayOpen+'">'+(trayOpen?'ซ่อนหัวข้อทั้งหมด':'หัวข้อทั้งหมด ▸')+'</button><div class="save" id="save">'+esc(saveMsg)+'</div></div></header>';
 
   // tray
-  h+='<aside class="tray'+(collapsed?' collapsed':'')+'"><div class="trayhead"><h2>หัวข้อทั้งหมด</h2><button type="button" id="tg">'+(collapsed?'แสดง':'ซ่อน')+'</button></div><div class="body">';
+  if(trayOpen){
+  h+='<aside class="tray"><div class="trayhead"><h2>หัวข้อทั้งหมด</h2><button type="button" id="tg2">ซ่อน</button></div><div class="body">';
   h+='<p class="hint">ตัวเลขด้านขวา = จำนวนวันที่ลงไว้แล้ว · ปุ่ม VIDEO เปิดคลิปใน YouTube (มี '+Object.keys(VIDEOS).length+' หัวข้อ)</p><div class="filters">';
   h+='<button type="button" data-f="all" aria-pressed="'+(filter==='all')+'">ทั้งหมด</button><button type="button" data-f="un" aria-pressed="'+(filter==='un')+'">ยังไม่ลง</button>';
   h+='</div>';
@@ -287,6 +324,7 @@ function render(){
     h+='</div></div>';
   }
   h+='</div></aside>';
+  }
 
   // calendar
   h+='<main class="cal"><div class="legend"><span><span class="mk exam">สอบ</span></span><span><span class="mk duty">เวร</span></span><span><span class="mk note">คาบสำคัญ</span></span>'+(canPublish?'':'<span class="ro">ดูอย่างเดียว: บันทึกได้เฉพาะในเครื่องนี้</span>')+'</div>';
@@ -299,8 +337,9 @@ function render(){
       if(key<today) cls.push('past'); if(key===today) cls.push('today'); if(key>LAST) cls.push('after');
       if(selected) cls.push('target');
       const ps=state.placements[key]||[];
-      h+='<div class="'+cls.join(' ')+'" data-day="'+key+'"><div class="dh"><span class="num">'+d.getUTCDate()+'</span><span class="wd">'+WD[k]+' '+MON[d.getUTCMonth()]+'</span>'+(ps.length?'<span class="load">'+ps.length+' หัวข้อ</span>':'')+'</div>';
+      h+='<div class="'+cls.join(' ')+'" data-day="'+key+'"><div class="dh"><span class="num">'+d.getUTCDate()+'</span><span class="wd">'+WD[k]+' '+MON[d.getUTCMonth()]+'</span>'+(ps.length?'<span class="load">'+ps.length+' หัวข้อ</span>':'')+(key>=today&&key<=END?'<button type="button" class="addbtn" data-add="'+key+'" aria-label="เพิ่มหัวข้อหรือเวรวันนี้">+</button>':'')+'</div>';
       for(const m of (MARKS[key]||[])) h+='<div class="mk '+m[0]+'">'+esc(m[1])+'</div>';
+      for(const du of (state.duties[key]||[])) h+='<button type="button" class="mk duty" data-duty="'+du.uid+'" data-dday="'+key+'" aria-label="แก้เวร">'+esc(du.label)+'</button>';
       h+='<div class="chips">';
       for(const p of ps){ const it=byId(p.id); if(!it) continue;
         h+='<div class="chip'+(p.done?' done':'')+'" data-uid="'+p.uid+'" data-from="'+key+'" style="--cat:'+catVar(it.cat)+'"><button type="button" class="ck" data-act="done" aria-label="อ่านจบ">'+(p.done?'✓':'')+'</button><span class="lbl">'+esc(it.title)+'</span>'+vidLink(it.id)+'<button type="button" data-act="del" aria-label="เอาออก">×</button></div>'; }
@@ -313,9 +352,48 @@ function render(){
   h+='<div class="toolbar"><button type="button" id="clearall">ล้างตารางทั้งหมด</button><span id="confirm"></span></div>';
   h+='</main></div>';
   if(selected){ const it=byId(selected); if(it) h+='<div class="selbar" role="status">เลือก: '+esc(it.title)+' — แตะวันที่จะอ่าน <button type="button" id="cancelsel">ยกเลิก</button></div>'; }
+  if(modal) h+=renderModal(today);
   root.innerHTML=h;
+  if(modal){ const q=document.getElementById('mq'); if(q){ q.value=modal.q||''; filterPicks(); } }
 }
+function dayLabel(key){ const d=new Date(key+'T00:00:00Z'); return WD[(d.getUTCDay()+6)%7]+' '+d.getUTCDate()+' '+MON[d.getUTCMonth()]; }
+function renderModal(today){
+  const m=modal; let h='<div class="overlay" id="ov"><div class="modal" role="dialog" aria-modal="true" aria-labelledby="mt">';
+  const editing=m.tab==='duty'&&m.edit; const du=editing?(state.duties[m.day]||[]).find(x=>x.uid===m.edit):null;
+  h+='<div class="mhead"><h2 id="mt">'+(editing?'แก้เวร':'เพิ่มในวัน')+' '+dayLabel(m.day)+'</h2><button type="button" id="mclose" aria-label="ปิด">✕</button></div>';
+  if(!editing) h+='<div class="mtabs"><button type="button" data-mtab="topic" aria-pressed="'+(m.tab==='topic')+'">หัวข้อที่จะอ่าน</button><button type="button" data-mtab="duty" aria-pressed="'+(m.tab==='duty')+'">เวร</button></div>';
+  h+='<div class="mbody">';
+  if(m.tab==='topic'){
+    const here=new Set((state.placements[m.day]||[]).map(p=>p.id));
+    h+='<input type="search" id="mq" placeholder="ค้นหาหัวข้อ เช่น bleeding, HIV" aria-label="ค้นหาหัวข้อ">';
+    const all=itemsAll();
+    for(const c of CATS){ const list=all.filter(i=>i.cat===c.k); if(!list.length) continue;
+      h+='<div class="mcat" style="--cat:'+catVar(c.k)+'" data-mcat="'+c.k+'"><span class="dot"></span>'+esc(c.name)+'</div>';
+      for(const i of list){ const n=countPlaced(i.id);
+        h+='<button type="button" class="mpick'+(m.picks.has(i.id)?' on':'')+'" data-pick="'+i.id+'" data-cat="'+c.k+'" data-t="'+esc((i.title+' '+c.name).toLowerCase())+'" style="--cat:'+catVar(i.cat)+'"><span class="box"></span><span>'+esc(i.title)+'</span><span class="meta">'+(here.has(i.id)?'มีในวันนี้แล้ว':(n?'ลงไว้ '+n+' วัน':'ยังไม่ลง'))+'</span></button>'; }
+    }
+    h+='</div><div class="mfoot"><button type="button" id="mclose2">ยกเลิก</button><button type="button" class="primary" id="madd"'+(m.picks.size?'':' disabled')+'>เพิ่ม '+m.picks.size+' หัวข้อ</button></div>';
+  } else {
+    if(!editing){ const ex=state.duties[m.day]||[]; if(ex.length) h+='<p class="mlabel">เวรที่มีอยู่วันนี้: '+ex.map(x=>esc(x.label)).join(', ')+' (แตะที่เวรในปฏิทินเพื่อแก้หรือลบ)</p>'; }
+    h+='<p class="mlabel">'+(editing?'เปลี่ยนเป็น':'เลือกเวรที่จะเพิ่ม')+'</p>';
+    for(const p of DUTY_PRESETS) h+='<button type="button" class="preset'+(du&&du.label===p?' cur':'')+'" data-preset="'+esc(p)+'">'+esc(p)+'</button>';
+    h+='<p class="mlabel">หรือพิมพ์เอง</p><div class="mrow"><input type="text" id="mcustom" maxlength="60" placeholder="เช่น เวร ER 8.00–16.00" value="'+(du&&!DUTY_PRESETS.includes(du.label)?esc(du.label):'')+'"><button type="button" class="primary" id="mcustomok">'+(editing?'บันทึก':'เพิ่ม')+'</button></div>';
+    if(editing){
+      h+='<p class="mlabel">ย้ายเวรนี้ไปวันอื่น (แลกเวร)</p><div class="mrow"><select id="mmove" aria-label="วันที่จะย้ายไป">';
+      let d=new Date(START+'T00:00:00Z'); while(iso(d)<=END){ const k=iso(d); if(k>=today) h+='<option value="'+k+'"'+(k===m.day?' selected':'')+'>'+dayLabel(k)+'</option>'; d.setUTCDate(d.getUTCDate()+1); }
+      h+='</select><button type="button" id="mmoveok">ย้าย</button></div>';
+    }
+    h+='</div><div class="mfoot">'+(editing?'<button type="button" class="danger" id="mdel">ลบเวรนี้</button>':'')+'<button type="button" id="mclose2">ปิด</button></div>';
+  }
+  h+='</div></div>';
+  return h;
+}
+function filterPicks(){ const q=(document.getElementById('mq')?.value||'').trim().toLowerCase(); modal.q=q;
+  const vis={}; document.querySelectorAll('.mpick').forEach(b=>{ const on=!q||b.dataset.t.includes(q); b.hidden=!on; if(on) vis[b.dataset.cat]=1; });
+  document.querySelectorAll('.mcat').forEach(c=>{ c.hidden=!vis[c.dataset.mcat]; }); }
+document.addEventListener('input',e=>{ if(e.target.id==='mq') filterPicks(); });
 
+function setDuty(label){ const {day,edit}=modal; modal=null; mutate(()=>{ const a=(state.duties[day]=state.duties[day]||[]); if(edit){ const x=a.find(x=>x.uid===edit); if(x) x.label=label; } else a.push({uid:'d'+(state.seq++),label}); }); }
 function mutate(fn){ fn(); state.ts=Date.now(); try{ localStorage.setItem('obgyn-planner',JSON.stringify(state)); }catch(e){} render(); schedulePublish(); }
 function place(id,day){ if(day>END) return; mutate(()=>{ (state.placements[day]=state.placements[day]||[]).push({id,uid:'u'+(state.seq++),done:false}); }); }
 function move(uid,from,to){ if(from===to) return; mutate(()=>{ const a=state.placements[from]||[]; const ix=a.findIndex(p=>p.uid===uid); if(ix<0) return; const [p]=a.splice(ix,1); if(!a.length) delete state.placements[from]; (state.placements[to]=state.placements[to]||[]).push(p); }); }
@@ -354,7 +432,7 @@ function endDrag(x,y){ if(!drag){ clearGhosts(); return; } const dd=drag; drag=n
   if(!dd.started) return; const d=dayAt(x,y); if(!d) return; const key=d.dataset.day;
   if(dd.kind==='item') place(dd.id,key); else move(dd.uid,dd.from,key); }
 function sourceInfo(t){
-  if(t.closest('a')) return null;
+  if(t.closest('a')||t.closest('.overlay')||t.closest('.addbtn')||t.closest('[data-duty]')) return null;
   const item=t.closest('.item'); if(item) return {kind:'item',id:item.dataset.id};
   const chip=t.closest('.chip'); if(chip && !t.closest('button')){ const from=chip.dataset.from; const p=(state.placements[from]||[]).find(p=>p.uid===chip.dataset.uid); if(p) return {kind:'chip',id:p.id,uid:p.uid,from}; }
   return null;
@@ -382,7 +460,20 @@ document.addEventListener('click',e=>{
   if(suppressClick) return;
   const t=e.target;
   if(t.closest('a.vid')) return;
-  if(t.id==='tg'){ document.querySelector('.tray').classList.toggle('collapsed'); t.textContent=document.querySelector('.tray').classList.contains('collapsed')?'แสดง':'ซ่อน'; return; }
+  if(t.closest('#tg')||t.closest('#tg2')){ trayOpen=!trayOpen; try{ localStorage.setItem('obgyn-tray',trayOpen?'1':'0'); }catch(_){} render(); return; }
+  if(modal){
+    if(t.id==='ov'||t.closest('#mclose')||t.closest('#mclose2')){ modal=null; render(); return; }
+    const tab=t.closest('[data-mtab]'); if(tab){ modal.tab=tab.dataset.mtab; render(); return; }
+    const pk=t.closest('[data-pick]'); if(pk){ const id=pk.dataset.pick; if(modal.picks.has(id)) modal.picks.delete(id); else modal.picks.add(id); pk.classList.toggle('on',modal.picks.has(id)); const b=document.getElementById('madd'); if(b){ b.disabled=!modal.picks.size; b.textContent='เพิ่ม '+modal.picks.size+' หัวข้อ'; } return; }
+    if(t.closest('#madd')){ const day=modal.day, ids=[...modal.picks]; modal=null; mutate(()=>{ const a=(state.placements[day]=state.placements[day]||[]); ids.forEach(id=>a.push({id,uid:'u'+(state.seq++),done:false})); }); return; }
+    const pr=t.closest('[data-preset]'); if(pr){ setDuty(pr.dataset.preset); return; }
+    if(t.closest('#mcustomok')){ const v=document.getElementById('mcustom').value.trim(); if(v) setDuty(v.slice(0,60)); return; }
+    if(t.closest('#mdel')){ const {day,edit}=modal; modal=null; mutate(()=>{ const a=state.duties[day]||[]; const i=a.findIndex(x=>x.uid===edit); if(i>=0) a.splice(i,1); if(!a.length) delete state.duties[day]; }); return; }
+    if(t.closest('#mmoveok')){ const to=document.getElementById('mmove').value; const {day,edit}=modal; modal=null; if(to===day){ render(); return; } mutate(()=>{ const a=state.duties[day]||[]; const i=a.findIndex(x=>x.uid===edit); if(i<0) return; const [x]=a.splice(i,1); if(!a.length) delete state.duties[day]; (state.duties[to]=state.duties[to]||[]).push(x); }); return; }
+    return;
+  }
+  const ad=t.closest('[data-add]'); if(ad){ selected=null; modal={day:ad.dataset.add,tab:'topic',picks:new Set(),q:''}; render(); setTimeout(()=>document.getElementById('mq')?.focus({preventScroll:true}),30); return; }
+  const dt=t.closest('[data-duty]'); if(dt){ modal={day:dt.dataset.dday,tab:'duty',edit:dt.dataset.duty,picks:new Set()}; render(); return; }
   if(t.id==='cancelsel'){ selected=null; render(); return; }
   if(t.id==='clearall'){ const c=document.getElementById('confirm'); c.innerHTML='ล้างจริงไหม? <button type="button" id="clearyes">ล้าง</button> <button type="button" id="clearno">ไม่</button>'; return; }
   if(t.id==='clearyes'){ mutate(()=>{ state.placements={}; }); return; }
@@ -396,7 +487,7 @@ document.addEventListener('click',e=>{
   const item=t.closest('.item'); if(item){ selected=(selected===item.dataset.id)?null:item.dataset.id; render(); return; }
   const day=t.closest('.day'); if(day&&selected&&!t.closest('.chip')){ const id=selected; selected=null; place(id,day.dataset.day); return; }
 });
-document.addEventListener('keydown',e=>{ if((e.key==='Enter'||e.key===' ')&&e.target.classList&&e.target.classList.contains('item')){ e.preventDefault(); e.target.click(); } if(e.key==='Escape'&&selected){ selected=null; render(); } });
+document.addEventListener('keydown',e=>{ if((e.key==='Enter'||e.key===' ')&&e.target.classList&&e.target.classList.contains('item')){ e.preventDefault(); e.target.click(); } if(e.key==='Escape'&&modal){ modal=null; render(); return; } if(e.key==='Escape'&&selected){ selected=null; render(); } });
 document.addEventListener('submit',e=>{ if(e.target.id!=='addown') return; e.preventDefault(); const v=document.getElementById('owninput').value.trim(); if(!v) return; mutate(()=>{ state.custom.push({id:'own'+(state.seq++),title:v.slice(0,80)}); }); });
 
 render();
